@@ -1,59 +1,64 @@
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <script src="https://cdn.jsdelivr.net/npm/phaser@3.15.1/dist/phaser-arcade-physics.min.js"></script>
-</head>
-<body>
-
+  </head>
+  <body>
     <script>
-    var config = {
+      var config = {
         type: Phaser.AUTO,
         width: 600,
-        height: 400,
+        height: 550,
         physics: {
-            default: 'arcade',
-            arcade: {
-                gravity: { y: 0 }
-            }
+          default: "arcade",
+          arcade: {
+            gravity: { y: 0 },
+          },
         },
         scene: {
-            preload: preload,
-            create: create
+          preload: preload,
+          create: create,
+          update: update,
+        },
+      };
+      var game = new Phaser.Game(config);
+
+      function preload() {
+        this.load.setBaseURL("http://labs.phaser.io");
+        // this.load.image("red", "assets/particles/red.png");
+      }
+
+      function create() {
+        var { width, height } = this.sys.game.canvas;
+        num = 100;
+        test_list = [];
+        for (var i = 0; i < num; i++) {
+          var x = Math.random() * width;
+          var y = Math.random() * height;
+          var v = 200;
+          var v_x = v * (Math.random() - 0.5);
+          var v_y = v * (Math.random() - 0.5);
+
+          test = this.physics.add.image(x, y, "red");
+          test.setVelocity(v_x, v_y);
+          test.setBounce(1, 1);
+          test.setCollideWorldBounds(true);
+
+          test_list.push(test);
         }
-    };
-
-    var game = new Phaser.Game(config);
-
-    function preload ()
-    {
-        this.load.setBaseURL('http://labs.phaser.io');
-
-        // this.load.image('sky', 'assets/skies/space3.png');
-        // this.load.image('red', 'assets/particles/red.png');
-        // this.load.image('logo', 'assets/sprites/phaser3-logo.png');
-    }
-
-    function create ()
-    {
-        this.add.image(200, 200, 'sky');
-
-        var particles = this.add.particles('red');
-
-        var emitter = particles.createEmitter({
-            speed: 100,
-            scale: { start: 1, end: 0 },
-            blendMode: 'ADD'
-        });
-
-        var logo = this.physics.add.image(400, 100, 'logo');
-
-        logo.setVelocity(100, 200);
-        logo.setBounce(1, 1);
-        logo.setCollideWorldBounds(true);
-
-        emitter.startFollow(logo);
-    }
+      }
+      function update() {
+        // Nested loop
+        // Get values from neighbors
+        // Update values
+        for (var i = 0; i < num / 2; i++) {
+          test = test_list[i];
+          var delta = 5;
+          var v_x = test.body.velocity.x;
+          var v_y = test.body.velocity.y;
+          test.setVelocity(v_x, v_y + delta);
+        }
+      }
     </script>
-
-</body>
+  </body>
 </html>
